@@ -1,28 +1,32 @@
-import { Metadata } from "next";
-import Link from "next/link";
+import Movie from "../../components/movie";
+import styles from "../../styles/home.module.css";
+import { API_URL } from "../constants";
 
-export const metadata: Metadata = {
+export const metadata = {
   title: "Home",
 };
 
-export const API_URL = "https://nomad-movies.nomadcoders.workers.dev/movies";
-
 async function getMovies() {
-  const res = await fetch(API_URL);
-  const json = await res.json();
+  // await new Promise((resolve) => setTimeout(resolve, 1000));
+  const response = await fetch(API_URL);
+  const json = await response.json();
   return json;
 }
 
 export default async function HomePage() {
   const movies = await getMovies();
   return (
-    <div>
+    <div className={styles.container}>
       {movies.map((movie) => (
-        <li key={movie.id}>
-          {/* <h2>{movie.title}</h2> */}
-          <Link href={`/movies/${movie.id}`}>{movie.title}</Link>
-        </li>
+        <Movie
+          key={movie.id}
+          id={movie.id}
+          poster_path={movie.poster_path}
+          title={movie.title}
+        />
       ))}
     </div>
   );
 }
+
+export const runtime = "edge";
